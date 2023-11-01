@@ -82,7 +82,7 @@ def update_model_dates(model):
         for date_expense in DateExpense.objects.filter(date = date): sum_expenses += date_expense.expense.amount
 
         if i == 0:
-            date.amount = date.amount + sum_profits - sum_expenses
+            date.amount = model.start_amount + sum_profits - sum_expenses
         else:
             date.amount = model_dates[i-1].amount + sum_profits - sum_expenses
 
