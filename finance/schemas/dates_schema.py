@@ -85,7 +85,7 @@ class DateQuery(graphene.ObjectType):
         if not (Model.objects.get(id=model_id)): raise Exception("ModelNotFound")
         if not (info.context.user == Model.objects.get(id=model_id).user): raise Exception("UserDoesNotHaveThisModel")
 
-        return Date.objects.filter(model=Model.objects.get(id=model_id))
+        return Date.objects.filter(model=Model.objects.get(id=model_id)).order_by('date')
 
 class DateMutation(UpdateDateMutation, graphene.ObjectType):
     update_date = UpdateDateMutation.Field()
