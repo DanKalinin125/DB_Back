@@ -80,6 +80,16 @@ class CreateModelMutation(graphene.Mutation):
         return CreateModelMutation(model = inst_model)
 
 
+def find_date_in_array_from_model_Date(date, dates):
+    """
+    Находит нужный объект модели Date из массива
+    """
+    for inst_date in dates:
+        if (inst_date.date == date):
+            return inst_date
+    return None
+
+
 class UpdateModelMutation(graphene.Mutation):
     """
     Обновить данные модели по индексу
@@ -124,10 +134,18 @@ class UpdateModelMutation(graphene.Mutation):
         if (all_field_none) : raise Exception("AllFieldsIsNone")
         inst_model.save(update_fields = update_fields)
 
-        #Обновление записей с датами
+        #Удаляем все старые значения и записываем их в переменную
+        old_dates = list(Date.objects.filter(model = inst_model))
+        Date.objects.filter(model = inst_model).delete()
+
+        #Записываем новые значения
         date = inst_model.start_date
         while date < inst_model.finish_date + timedelta(days=1):
-            if not (Date.objects.get(model = inst_model, date = date)):
+            old_date = find_date_in_array_from_model_Date(date, old_dates)
+            if (old_date != None):
+                new_date = Date(id=old_date.id, model=inst_model, date=date, amount=inst_model.start_amount, real_amount = old_date.real_amount, comment = old_date.comment)
+                new_date.save()
+            else:
                 new_date = Date(model=inst_model, date=date, amount=inst_model.start_amount)
                 new_date.save()
             date += timedelta(days=1)
