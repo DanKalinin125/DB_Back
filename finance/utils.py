@@ -27,11 +27,15 @@ def update_profit_dates(profit):
 
     #Ищем их соответствия в модели Date и добавляем элементы в DateProfit
     for date in profit_dates:
-        if not (Date.objects.get(model = profit.model, date = date)): continue
-        inst_date = Date.objects.get(model = profit.model, date = date)
+        try:
+            Date.objects.get(model=profit.model, date=date)
+        except:
+            continue
+
+        inst_date = Date.objects.get(model=profit.model, date=date)
 
         if (inst_date != None):
-            date_profit = DateProfit(date = inst_date, profit = profit)
+            date_profit = DateProfit(date=inst_date, profit=profit)
             date_profit.save()
 
 def update_expense_dates(expense):
@@ -59,11 +63,15 @@ def update_expense_dates(expense):
 
     #Ищем их соответствия в модели Date и добавляем элементы в DateExpense
     for date in expense_dates:
-        if not (Date.objects.get(model = expense.model, date = date)): continue
-        inst_date = Date.objects.get(model = expense.model, date = date)
+        try:
+            Date.objects.get(model = expense.model, date = date)
+        except:
+            continue
+
+        inst_date = Date.objects.get(model=expense.model, date=date)
 
         if (inst_date != None):
-            date_expense = DateExpense(date = inst_date, expense = expense)
+            date_expense = DateExpense(date=inst_date, expense=expense)
             date_expense.save()
 
 def update_model_dates(model):
